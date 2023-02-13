@@ -8,11 +8,11 @@ public class SpawnManager : MonoBehaviour
     private float spawnRange = 9f;
     public int enemiesInScene;
     public int enemiesPerWave = 1;
-    public GameObject powerupPrefab;
+    public GameObject[] powerupPrefabs;
     private void Start()
     {
         SpawnEnemyWave(enemiesPerWave);
-        Instantiate(powerupPrefab, RandomSpawnPosition(), Quaternion.identity);
+        
         
     }
 
@@ -25,7 +25,9 @@ public class SpawnManager : MonoBehaviour
     }
     private void SpawnEnemyWave(int enemiesToSpawn)
     {
-        for(int i = 0; i < enemiesToSpawn; i++)
+        int randomIndex = Random.Range(0, powerupPrefabs.Length);
+        Instantiate(powerupPrefabs[randomIndex], RandomSpawnPosition(), Quaternion.identity);
+        for (int i = 0; i < enemiesToSpawn; i++)
         {
             Instantiate(enemyPrefab, RandomSpawnPosition(), Quaternion.identity);
         }
@@ -37,7 +39,7 @@ public class SpawnManager : MonoBehaviour
         {
             enemiesPerWave++;
             SpawnEnemyWave(enemiesPerWave);
-            Instantiate(powerupPrefab, RandomSpawnPosition(), Quaternion.identity);
+           
         }
 
     }

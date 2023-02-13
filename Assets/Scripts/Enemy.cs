@@ -5,6 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float speed;
+    private float underLimit = -10f;
     private Rigidbody _rigidbody;
     private GameObject player;
 
@@ -19,7 +20,7 @@ public class Enemy : MonoBehaviour
         Vector3 direction = (player.transform.position - transform.position).normalized;
         _rigidbody.AddForce(direction * speed);
 
-        if (transform.position.y < -10)
+        if (transform.position.y < underLimit)
         {
             Destroy(gameObject);
         }

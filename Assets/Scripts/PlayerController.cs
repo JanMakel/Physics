@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 30f;
+    private float speed = 20f;
     private float forwardInput;
     private Rigidbody _rigidbody;
     private GameObject focalPoint;
-    public bool hasPowerup;
+    private bool hasPowerup;
+    private bool hasPowerup2;
     private float powerUpForce = 15f;
     public GameObject[] powerupIndicators;
-    
+    private float originalScale = 1.5f;
+    private float powerupScale = 2f;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -23,6 +25,17 @@ public class PlayerController : MonoBehaviour
 
         }
 
+        if (other.gameObject.CompareTag("Powerup_2"))
+        {
+            hasPowerup2 = true;
+            Destroy(other.gameObject);
+            StartCoroutine(PowerupCountDown());
+
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
         if (other.gameObject.CompareTag("Enemy") && hasPowerup)
         {
             Rigidbody enemyRigidbody = other.gameObject.GetComponent<Rigidbody>();
@@ -30,26 +43,27 @@ public class PlayerController : MonoBehaviour
             Vector3 awayFromPlayer = (other.gameObject.transform.position - transform.position).normalized;
             enemyRigidbody.AddForce(awayFromPlayer * powerUpForce, ForceMode.Impulse);
         }
-
-        if (other.gameObject.CompareTag("Powerup_2"))
-        {
-            transform.localScale = new Vector3 (2,2,2);
-            Destroy(other.gameObject);
-            StartCoroutine(PowerupCountDown());
-
-        }
     }
-
     private IEnumerator PowerupCountDown()
     {
         for(int i = 0; i < powerupIndicators.Length; i++)
         {
+            if (hasPowerup2)
+            {
+                transform.localScale = powerupScale * Vector3.one;
+            }
             powerupIndicators[i].SetActive(true);
             yield return new WaitForSeconds(2);
             powerupIndicators[i].SetActive(false);
         }
+
+        if (hasPowerup2)
+        {
+            transform.localScale = originalScale * Vector3.one;
+        }
         hasPowerup = false;
-        
+        hasPowerup = false;
+
     }
 
     private void Start()
